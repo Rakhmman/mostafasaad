@@ -1,0 +1,83 @@
+#include <cstring>
+#include <vector>
+#include <list>
+#include <map>
+#include <set>
+#include <deque>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <queue>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
+#include <cassert>
+
+#define ios ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
+#define S second
+#define F first
+#define pb push_back
+#define nl '\n'
+#define NL cout << '\n';
+#define EX exit(0)
+#define all(s) s.begin(), s.end()
+#define FOR(i, start, finish, k) for(int i = start; i <= finish; i += k)
+
+const long long MXN = 3e5 + 1;
+const long long MNN = 1e5 + 1;
+const long long MOD = 1e9;
+const long long INF = 1e18;
+const long long OO = 1e9 + 500;
+
+typedef long long llong;
+typedef unsigned long long ullong;
+
+using namespace std;
+
+llong n, b[MXN], dp[MXN], ans = -OO, k;
+vector<int> q[MXN];
+
+void dfs(int x, int p, bool needAns){
+	dp[x] += b[x];
+	for(auto i : q[x]){
+		if(i != p){
+			dfs(i, x, needAns);
+			if(dp[i] > 0) dp[x] += dp[i];
+		}
+	}
+	if(needAns == 1){
+		ans = max(ans, dp[x]);
+	}else if(needAns == 0 && dp[x] == ans){
+		dp[x] = 0;
+		k++;
+	}
+}
+
+int main(){
+	ios;
+	cin >> n;
+	for(int i = 1; i <= n; i++){
+		cin >> b[i];
+	}
+	for(int i = 1; i < n; i++){
+		int u, v;
+		cin >> u >> v;
+		q[u].pb(v);
+		q[v].pb(u);
+	}
+	dfs(1, 0, 1);
+	for(int i = 0; i < MXN; i++){
+		dp[i] = 0;
+	}
+	dfs(1, 0, 0);
+	cout << ans * k << ' ' << k << nl;
+	return 0;
+}
+
